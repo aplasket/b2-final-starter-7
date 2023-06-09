@@ -2,5 +2,8 @@
 
 <h3>Coupons:</h3>
 <% @coupons.each do |coupon| %>
-  <p><%= coupon.name  %></p>
+  <div id="coupon-<%= coupon.id %>">
+    <p><%= link_to "#{coupon.name}", merchant_coupon_path(@merchant, coupon) %>
+      Amount off: <%= coupon.amount_off %> <%= coupon.discount_type %></p>
+  </div>
 <% end %>
