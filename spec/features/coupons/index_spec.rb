@@ -27,13 +27,16 @@ RSpec.describe "/merchants/coupons, coupon index page", type: :feature do
         expect(page).to have_link("#{@hair20.name}")
         expect(page).to have_content("Amount off: #{@hair20.amount_off} #{@hair20.discount_type}")
       end
-      
+
       expect(page).to_not have_content(@sallys.name)
       expect(page).to_not have_content(@sallybogo50.unique_code)
     end
 
-    xit "all coupon names link to their show page" do
-
+    it "all coupon names link to their show page" do
+      within "#coupon-#{@hair20.id}" do
+        click_link @hair20.name
+        expect(current_path).to eq(merchant_coupon_path(@hair, @hair20))
+      end
     end
   end
 end
