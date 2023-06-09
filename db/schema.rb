@@ -17,7 +17,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_09_164829) do
   create_table "coupons", force: :cascade do |t|
     t.string "name"
     t.string "unique_code"
-    t.integer "amount"
+    t.integer "amount_off"
     t.integer "discount_type"
     t.integer "status", default: 1
     t.bigint "merchant_id", null: false

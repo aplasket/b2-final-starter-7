@@ -28,7 +28,7 @@ This project is an extension of the Little Esty Shop group project. You will add
 1. A coupon code from a Merchant only applies to Items sold by that Merchant.
 
 ### Project Schema:
-![coupon_code_project](app/assets/images/Coupon%20Schema.png)
+![coupon_code_project](app/assets/images/Coupon%20Shoppe.png)
 
 # User Stories
 In the user stories below, we have outlined a few examples of Sad Paths you may consider adding in. In your project, you should take time to implement at least 2 sad paths total, but you are not limited to the examples we provide.
