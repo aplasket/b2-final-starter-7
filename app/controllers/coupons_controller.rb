@@ -2,7 +2,7 @@ class CouponsController < ApplicationController
   before_action :find_merchant, only: [:index]
 
   def index
-
+    @coupons = @merchant.coupons
   end
 
   private

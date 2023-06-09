@@ -1,1 +1,6 @@
-<h1>
+<%= render partial: "shared/nav" %>
+
+<h3>Coupons:</h3>
+<% @coupons.each do |coupon| %>
+  <p><%= coupon.name  %></p>
+<% end %>
