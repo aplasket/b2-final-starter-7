@@ -1,6 +1,7 @@
 class Coupon < ApplicationRecord
   validates_presence_of :name,
                         :unique_code,
+                        :amount_off,
                         :discount_type,
                         :status,
                         :merchant_id
