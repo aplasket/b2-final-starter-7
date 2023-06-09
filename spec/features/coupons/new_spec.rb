@@ -14,10 +14,10 @@ RSpec.describe "/merchants/id/coupons/new, coupon new page", type: :feature do
   end
 
   describe "as a merchant on the coupon new page" do
+    #user story 2
     it "can create a new coupon" do
-      visit new_merchant_coupon_path(@hair)
       expect(page).to have_content("New Coupon")
-      
+
       fill_in "Name", with: "50% off"
       fill_in "Unique code", with: "HAIR50OFF"
       fill_in "Amount off", with: 50
@@ -27,6 +27,21 @@ RSpec.describe "/merchants/id/coupons/new, coupon new page", type: :feature do
       expect(current_path).to eq(merchant_coupons_path(@hair))
       expect(page).to have_content("50% off")
       expect(page).to have_content("New Coupon has been created!")
+    end
+
+    #sad path for user story 2
+    it "can't create a new coupon if the unique_code already exists in database" do
+      expect(page).to have_content("New Coupon")
+
+      fill_in "Name", with: "All shampoo products 10% off"
+      fill_in "Unique code", with: "HAIR10OFF"
+      fill_in "Amount off", with: 10
+      select "percent", from: "Discount type"
+
+      click_button "Create Coupon"
+
+      expect(current_path).to eq(new_merchant_coupon_path(@hair))
+      expect(page).to have_content("Unique code has already been taken")
     end
   end
 end
