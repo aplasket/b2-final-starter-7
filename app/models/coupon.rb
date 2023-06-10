@@ -1,13 +1,15 @@
 class Coupon < ApplicationRecord
+  belongs_to :merchant
+  has_many :invoices
+  
   validates_presence_of :name,
-                        :unique_code,
-                        :amount_off,
                         :discount_type,
                         :status,
                         :merchant_id
 
-  belongs_to :merchant
-  belongs_to :invoice, optional: true
+  validates :amount_off, numericality: { only_integer: true, greater_than: 0 }
+  validates :unique_code, uniqueness: { case_sensitive: false }
+
 
   enum discount_type: [:percent, :dollars]
   enum status: [:active, :inactive]
