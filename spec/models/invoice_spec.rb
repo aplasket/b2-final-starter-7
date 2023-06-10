@@ -8,11 +8,11 @@ RSpec.describe Invoice, type: :model do
 
   describe "relationships" do
     it { should belong_to :customer }
+    it { should belong_to(:coupon).optional }
     it { should have_many :invoice_items }
     it { should have_many(:items).through(:invoice_items) }
     it { should have_many(:merchants).through(:items) }
     it { should have_many :transactions}
-    it { should belong_to(:coupon).optional }
   end
 
   describe "instance methods" do
@@ -23,7 +23,7 @@ RSpec.describe Invoice, type: :model do
       @customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
       @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2, created_at: "2012-03-27 14:54:09")
       @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 9, unit_price: 10, status: 2)
-      @ii_11 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 1, unit_price: 10, status: 1)
+      @ii_2 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_8.id, quantity: 1, unit_price: 10, status: 1)
 
       expect(@invoice_1.total_revenue).to eq(100)
     end

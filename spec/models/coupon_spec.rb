@@ -5,7 +5,7 @@ RSpec.describe Coupon, type: :model do
     it { should belong_to(:merchant) }
     it { should have_many(:invoices) }
   end
-  
+
   describe "validations" do
     let!(:merchant) { Merchant.create!(name: "merchant name inserted", status: 0) }
     subject { Coupon.new(name: "Name inserted", amount_off: 0, discount_type: 0, merchant_id: merchant.id) }
@@ -16,5 +16,4 @@ RSpec.describe Coupon, type: :model do
     it { should validate_presence_of(:status) }
     it { should validate_presence_of(:merchant_id) }
   end
-
 end

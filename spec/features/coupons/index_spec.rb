@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/merchants/id/coupons, coupon index page", type: :feature do
+RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
   before(:each) do
     @hair = Merchant.create!(name: "Hair Care")
     @hair10 = Coupon.create!(name: "10% off", unique_code: "HAIR10OFF", amount_off: 10, discount_type: 0, merchant_id: @hair.id)
