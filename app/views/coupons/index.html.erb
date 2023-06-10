@@ -1,5 +1,7 @@
 <%= render partial: "shared/nav" %>
 
+<%= link_to "Create New Coupon", new_merchant_coupon_path(@merchant) %>
+
 <h3>Coupons:</h3>
 <% @coupons.each do |coupon| %>
   <div id="coupon-<%= coupon.id %>">
