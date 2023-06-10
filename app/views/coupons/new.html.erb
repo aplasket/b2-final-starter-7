@@ -1,0 +1,15 @@
+<%= render partial: "shared/nav" %>
+
+<h3>New Coupon</h3>
+<%= form_with model: @coupon, method: :post, url: merchant_coupons_path(@merchant), local: true do |f| %>
+  <%= f.label :name %>
+  <%= f.text_field :name %><br/><br/>
+  <%= f.label :unique_code %>
+  <%= f.text_field :unique_code %><br/><br/>
+  <%= f.label :amount_off %>
+  <%= f.number_field :amount_off %><br/><br/>
+  <%= f.label :discount_type %>
+  <%= f.select :discount_type, ['percent', 'dollars'] %><br/><br/>
+
+  <%= f.submit "Create Coupon" %>
+<% end %>
