@@ -4,6 +4,8 @@ class CouponsController < ApplicationController
 
   def index
     @coupons = @merchant.coupons
+    @active_coupons = @merchant.coupons.active
+    @inactive_coupons = @merchant.coupons.inactive
   end
 
   def show
