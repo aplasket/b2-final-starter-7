@@ -9,6 +9,7 @@ RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
 
     @sallys = Merchant.create!(name: "Sally's Salon")
     @sallyships = Coupon.create!(name: "Free Shipping", unique_code: "SALLYFREESHIP", amount_off: 12, discount_type: 1, merchant_id: @sallys.id)
+    @suziebest = Coupon.create!(name: "Suzie's Best Discount", unique_code: "OWNER50", amount_off: 50, discount_type: 0, merchant_id: @sallys.id)
 
     visit merchant_coupons_path(@hair)
   end
@@ -30,6 +31,7 @@ RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
       end
 
       expect(page).to_not have_content(@sallys.name)
+      expect(page).to_not have_content(@suziebest.name)
     end
 
     it "all coupon names link to their show page" do
@@ -67,6 +69,7 @@ RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
       end
 
       expect(page).to_not have_content(@sallys.name)
+      expect(page).to_not have_content(@suziebest.name)
     end
 
     it "updates the section a coupon is when it is activated/deactivated on its show page" do
