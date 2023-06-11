@@ -1,7 +1,8 @@
 class Coupon < ApplicationRecord
   belongs_to :merchant
   has_many :invoices
-  
+
+
   validates_presence_of :name,
                         :discount_type,
                         :status,
@@ -13,4 +14,8 @@ class Coupon < ApplicationRecord
 
   enum discount_type: [:percent, :dollars]
   enum status: [:active, :inactive]
+
+  def count_used
+    invoices.joins(:transactions).where("transactions.result = 1").count
+  end
 end
