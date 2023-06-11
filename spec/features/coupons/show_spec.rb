@@ -41,14 +41,14 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
 
   describe "as a merchant, on the coupon show page" do
     it "displays the coupons name, code, amount, discount type, and status" do
-      expect(page).to have_content(@hair10.name)
+      expect(page).to have_content("Coupon Name: #{@hair10.name}")
       expect(page).to have_content("Code: #{@hair10.unique_code}")
-      expect(page).to have_content("Amount off: #{@hair10.amount} #{@hair10.discount_type}")
+      expect(page).to have_content("Amount off: $#{@hair10.amount_off} #{@hair10.discount_type}")
       expect(page).to have_content("Status: #{@hair10.status}")
       expect(page).to_not have_content(@hair20.name)
     end
 
-    xit "displays the count of how many times the coupon has been used" do
+    it "displays the count of how many times the coupon has been used" do
       #coupon should only be limited to successful transactions
       expect(page).to have_content("Times Used: #{@hair10.count_used}") #should equal 3
     end

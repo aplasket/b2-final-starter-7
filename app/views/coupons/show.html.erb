@@ -1,0 +1,8 @@
+<%= render partial: "shared/nav" %>
+
+<h2>Coupon Name: <%= @coupon.name %></h2>
+<p>Code: <%= @coupon.unique_code %></p>
+<p>Amount off: $<%= @coupon.amount_off%> <%= @coupon.discount_type %></p>
+<p>Status: <%= @coupon.status %></p>
+
+<p>Times Used: <%= @coupon.count_used %></p>

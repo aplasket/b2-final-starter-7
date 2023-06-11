@@ -1,4 +1,5 @@
 class CouponsController < ApplicationController
+  before_action :find_coupon_and_merchant, only: [:show]
   before_action :find_merchant, only: [:index, :new, :create]
 
   def index
@@ -6,6 +7,7 @@ class CouponsController < ApplicationController
   end
 
   def show
+    @coupon = Coupon.find(params[:id])
   end
 
   def new
@@ -30,5 +32,10 @@ class CouponsController < ApplicationController
 
   def coupon_params
     params.permit(:name, :unique_code, :amount_off, :discount_type, :merchant_id)
+  end
+
+  def find_coupon_and_merchant
+    @coupon = Coupon.find(params[:id])
+    @merchant = Merchant.find(params[:merchant_id])
   end
 end
