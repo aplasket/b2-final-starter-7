@@ -14,6 +14,7 @@ RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
   end
 
   describe "as a merchant on the coupon index page" do
+    #userstory 1
     it "shows all of my coupons names, coupon type & amount off" do
       expect(page).to have_content(@hair.name)
       expect(page).to have_content("Coupons:")
@@ -39,10 +40,13 @@ RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
       end
     end
 
+    #userstory 2
     it "has a link to make a new coupon" do
       expect(page).to have_link("Create New Coupon")
       click_link "Create New Coupon"
       expect(current_path).to eq(new_merchant_coupon_path(@hair))
     end
+
+    
   end
 end

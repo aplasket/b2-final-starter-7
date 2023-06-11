@@ -38,6 +38,7 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
   end
 
   describe "as a merchant, on the coupon show page" do
+    #userstory 3
     it "displays the coupons name, code, amount, discount type, and status" do
       visit merchant_coupon_path(@hair, @hair10)
 
@@ -54,6 +55,7 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
       expect(page).to have_content("Times Used: #{@hair10.count_used}") #should equal 3
     end
 
+    #userstory 4
     it "displays a button to deactivate the coupon" do
       visit merchant_coupon_path(@hair, @hair20)
 
@@ -73,6 +75,7 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
       end
     end
 
+    #userstory 5
     it "displays a button to activate the coupon" do
       visit merchant_coupon_path(@hair, @hair10)
       expect(@hair10.status).to eq("inactive")
