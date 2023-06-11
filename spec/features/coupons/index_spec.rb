@@ -57,7 +57,7 @@ RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
           expect(page).to have_link("#{@hair20.name}")
         end
       end
-
+    
       within "#inactive-coupons" do
         within ".coupon-#{@hair10.id}" do
           expect(page).to have_link("#{@hair10.name}")
