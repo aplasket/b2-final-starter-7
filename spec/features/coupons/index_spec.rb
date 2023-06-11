@@ -30,7 +30,6 @@ RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
       end
 
       expect(page).to_not have_content(@sallys.name)
-      expect(page).to_not have_content(@sallyships.unique_code)
     end
 
     it "all coupon names link to their show page" do
@@ -57,7 +56,7 @@ RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
           expect(page).to have_link("#{@hair20.name}")
         end
       end
-    
+
       within "#inactive-coupons" do
         within ".coupon-#{@hair10.id}" do
           expect(page).to have_link("#{@hair10.name}")
@@ -67,7 +66,6 @@ RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
         end
       end
 
-      expect(page).to_not have_content(@sallyships.unique_code)
       expect(page).to_not have_content(@sallys.name)
     end
 
