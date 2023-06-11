@@ -6,3 +6,11 @@
 <p>Status: <%= @coupon.status %></p>
 
 <p>Times Used: <%= @coupon.count_used %></p>
+
+<div id="status-<%= @coupon.id %>">
+  <% if @coupon.status == "active" %>
+      <%= button_to "Deactivate Coupon", "/merchants/#{@merchant.id}/coupons/#{@coupon.id}?status=inactive", method: :patch %>
+  <% elsif @coupon.status == "inactive" %>
+      <%= button_to "Activate Coupon", "/merchants/#{@merchant.id}/coupons/#{@coupon.id}?status=active", method: :patch %>
+  <% end %>
+  </div>

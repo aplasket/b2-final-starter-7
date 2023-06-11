@@ -1,5 +1,5 @@
 class CouponsController < ApplicationController
-  before_action :find_coupon_and_merchant, only: [:show]
+  before_action :find_coupon_and_merchant, only: [:show, :edit, :update]
   before_action :find_merchant, only: [:index, :new, :create]
 
   def index
@@ -25,13 +25,26 @@ class CouponsController < ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    if params[:status] == "active"
+      @coupon.update(status: "active")
+      redirect_to merchant_coupon_path(@merchant, @coupon)
+    elsif params[:status] == "inactive"
+      @coupon.update(status: "inactive")
+      redirect_to merchant_coupon_path(@merchant, @coupon)
+    end
+  end
+
   private
   def find_merchant
     @merchant = Merchant.find(params[:merchant_id])
   end
 
   def coupon_params
-    params.permit(:name, :unique_code, :amount_off, :discount_type, :merchant_id)
+    params.permit(:name, :unique_code, :amount_off, :discount_type, :merchant_id, :status)
   end
 
   def find_coupon_and_merchant
