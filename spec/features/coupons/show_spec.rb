@@ -4,7 +4,7 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
   before(:each) do
     @hair = Merchant.create!(name: "Hair Care")
     @hair10 = Coupon.create!(name: "10% off", unique_code: "HAIR10OFF", amount_off: 10, discount_type: 0, merchant_id: @hair.id)
-    @hair20 = Coupon.create!(name: "20% off", unique_code: "HAIR20OFF", amount_off: 20, discount_type: 0, merchant_id: @hair.id)
+    @hair20 = Coupon.create!(name: "20% off", unique_code: "HAIR20OFF", amount_off: 20, discount_type: 0, merchant_id: @hair.id, status: 0)
     @hairbogo50 = Coupon.create!(name: "Free Shipping", unique_code: "HAIRFREESHIP", amount_off: 7, discount_type: 1, merchant_id: @hair.id)
 
     @sallys = Merchant.create!(name: "Sally's Salon")
@@ -35,12 +35,12 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
     @transaction3 = Transaction.create!(credit_card_number: 234092, result: 1, invoice_id: @invoice_3.id) #c2.1 success
     @transaction4 = Transaction.create!(credit_card_number: 230429, result: 0, invoice_id: @invoice_4.id) #c2.2 fail
     @transaction5 = Transaction.create!(credit_card_number: 102938, result: 0, invoice_id: @invoice_5.id) #c3.1 fail
-
-    visit merchant_coupon_path(@hair, @hair10)
   end
 
   describe "as a merchant, on the coupon show page" do
     it "displays the coupons name, code, amount, discount type, and status" do
+      visit merchant_coupon_path(@hair, @hair10)
+
       expect(page).to have_content("Coupon Name: #{@hair10.name}")
       expect(page).to have_content("Code: #{@hair10.unique_code}")
       expect(page).to have_content("Amount off: $#{@hair10.amount_off} #{@hair10.discount_type}")
@@ -49,7 +49,28 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
     end
 
     it "displays the count of how many times the coupon has been used" do
+      visit merchant_coupon_path(@hair, @hair10)
+
       expect(page).to have_content("Times Used: #{@hair10.count_used}") #should equal 3
+    end
+
+    it "displays a button to activate or deactivate the coupon" do
+      visit merchant_coupon_path(@hair, @hair20)
+
+      expect(@hair20.status).to eq("active")
+      expect(page).to have_content("Status: active")
+
+      within "#status-#{@hair20.id}" do
+        expect(page).to have_button("Deactivate Coupon")
+        click_button "Deactivate Coupon"
+      end
+
+      expect(current_path).to eq(merchant_coupon_path(@hair, @hair20))
+      expect(page).to have_content("Status: inactive")
+  
+      within "#status-#{@hair20.id}" do
+        expect(page).to have_button("Activate Coupon")
+      end
     end
   end
 end
