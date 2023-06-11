@@ -108,14 +108,17 @@ RSpec.describe "invoices show" do
 
   #userstory 7
   it "shows subtotal from this invoice (not including discounts)" do
+    visit merchant_invoice_path(@merchant1, @invoice_1)
+
+    expect(page).to have_content("Subtotal: #{@invoice_1.total_revenue}")
+  end
+
+  xit "displays the grand total revenue after discount applied" do
+    visit merchant_invoice_path(@merchant1, @invoice_1)
 
   end
 
-  it "displays the grand total revenue after discount applied" do
-
-  end
-
-  it "displays name and code of the coupon used (if applicable) as a link to that coupon's show page" do
+  xit "displays name and code of the coupon used (if applicable) as a link to that coupon's show page" do
     visit merchant_invoice_path(@merchant1, @invoice_1)
 
   end
