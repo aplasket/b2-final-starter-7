@@ -49,7 +49,6 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
     end
 
     it "displays the count of how many times the coupon has been used" do
-      #coupon should only be limited to successful transactions
       expect(page).to have_content("Times Used: #{@hair10.count_used}") #should equal 3
     end
   end
