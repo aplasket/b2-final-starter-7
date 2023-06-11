@@ -54,7 +54,7 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
       expect(page).to have_content("Times Used: #{@hair10.count_used}") #should equal 3
     end
 
-    it "displays a button to activate or deactivate the coupon" do
+    it "displays a button to deactivate the coupon" do
       visit merchant_coupon_path(@hair, @hair20)
 
       expect(@hair20.status).to eq("active")
@@ -67,9 +67,27 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
 
       expect(current_path).to eq(merchant_coupon_path(@hair, @hair20))
       expect(page).to have_content("Status: inactive")
-  
+
       within "#status-#{@hair20.id}" do
         expect(page).to have_button("Activate Coupon")
+      end
+    end
+
+    it "displays a button to activate the coupon" do
+      visit merchant_coupon_path(@hair, @hair10)
+      expect(@hair10.status).to eq("inactive")
+      expect(page).to have_content("Status: inactive")
+
+      within "#status-#{@hair10.id}" do
+        expect(page).to have_button("Activate Coupon")
+        click_button "Activate Coupon"
+      end
+
+      expect(current_path).to eq(merchant_coupon_path(@hair, @hair10))
+      expect(page).to have_content("Status: active")
+
+      within "#status-#{@hair10.id}" do
+        expect(page).to have_button("Deactivate Coupon")
       end
     end
   end
