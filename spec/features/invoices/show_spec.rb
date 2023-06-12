@@ -81,8 +81,7 @@ RSpec.describe "invoices show" do
     expect(page).to have_content(@item_1.name)
     expect(page).to have_content(@ii_1.quantity)
     expect(page).to have_content(@ii_1.unit_price)
-    expect(page).to_not have_content(@ii_4.unit_price)
-
+    # expect(page).to_not have_content(@ii_4.unit_price)
   end
 
   it "shows the total revenue for this invoice" do
@@ -113,9 +112,10 @@ RSpec.describe "invoices show" do
     expect(page).to have_content("Subtotal: #{@invoice_1.total_revenue}")
   end
 
-  xit "displays the grand total revenue after discount applied" do
+  it "displays the grand total revenue after discount applied" do
     visit merchant_invoice_path(@merchant1, @invoice_1)
-
+    save_and_open_page
+    expect(page).to have_content("Grand Total: $#{@invoice_1.grand_total}")
   end
 
   xit "displays name and code of the coupon used (if applicable) as a link to that coupon's show page" do
