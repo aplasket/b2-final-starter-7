@@ -110,7 +110,7 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
         expect(page).to have_button("Activate Coupon")
         click_button "Activate Coupon"
       end
-
+      expect(current_path).to eq(merchant_coupons_path(@hair))
       expect(page).to have_content("Error: You cannot have more than 5 active coupons, please deactivate one first")
     end
   end
