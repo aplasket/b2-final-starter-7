@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
   before(:each) do
     @hair = Merchant.create!(name: "Hair Care")
-    @hair10 = Coupon.create!(name: "10% off", unique_code: "HAIR10OFF", amount_off: 10, discount_type: 0, merchant_id: @hair.id)
+    @hair10 = Coupon.create!(name: "10% off", unique_code: "HAIR10OFF", amount_off: 10, discount_type: 0, merchant_id: @hair.id) #default status is 1/inactive
     @hair20 = Coupon.create!(name: "20% off", unique_code: "HAIR20OFF", amount_off: 20, discount_type: 0, merchant_id: @hair.id, status: 0)
     @hairships = Coupon.create!(name: "Free Shipping", unique_code: "HAIRFREESHIP", amount_off: 7, discount_type: 1, merchant_id: @hair.id)
 
@@ -92,6 +92,26 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
       within "#status-#{@hair10.id}" do
         expect(page).to have_button("Deactivate Coupon")
       end
+    end
+
+    #sad path, cannot have more than 5 active coupons
+    it "displays error if merchant tries to activate more than 5 coupons" do
+      coupon1 = @hair.coupons.create!(name: "silly40", unique_code: "SILLY40", amount_off: 40, discount_type: 0, status: 0)
+      coupon2 = @hair.coupons.create!(name: "brush10", unique_code: "BRUSH10", amount_off: 10, discount_type: 1, status: 0)
+      coupon3 = @hair.coupons.create!(name: "FREESHIP", unique_code: "SHIPTODAY", amount_off: 11, discount_type: 1, status: 0)
+      coupon4 = @hair.coupons.create!(name: "save25today", unique_code: "25TODAY", amount_off: 25, discount_type: 0, status: 0)
+      coupon5 = @hair.coupons.create!(name: "THANKS13", unique_code: "THANKS13", amount_off: 13, discount_type: 0, status: 1)
+
+      visit merchant_coupon_path(@hair, coupon5)
+
+      within "#status-#{coupon5.id}" do
+        expect(coupon5.status).to eq("inactive")
+        expect(@hair.coupons.active.count).to eq(5)
+        expect(page).to have_button("Activate Coupon")
+        click_button "Activate Coupon"
+      end
+
+      expect(page).to have_content("Error: You cannot have more than 5 active coupons, please deactivate one first")
     end
   end
 end
