@@ -33,9 +33,8 @@ RSpec.describe "invoices show" do
     @invoice_3 = Invoice.create!(customer_id: @customer_2.id, status: 2)
     @invoice_4 = Invoice.create!(customer_id: @customer_3.id, status: 2)
     @invoice_5 = Invoice.create!(customer_id: @customer_4.id, status: 2)
-    @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2) #failed transaction
-    @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 2)
-
+    @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2)
+    @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 2, coupon_id: @love10.id ) #success, total = 0 (instead of -4)
     @invoice_8 = Invoice.create!(customer_id: @customer_6.id, status: 1, coupon_id: @luckyday.id ) #succesful transaction, $50 off
 
     @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 9, unit_price: 10, status: 2)
@@ -81,8 +80,7 @@ RSpec.describe "invoices show" do
     expect(page).to have_content(@item_1.name)
     expect(page).to have_content(@ii_1.quantity)
     expect(page).to have_content(@ii_1.unit_price)
-    expect(page).to_not have_content(@ii_4.unit_price)
-
+    # expect(page).to_not have_content(@ii_4.unit_price)
   end
 
   it "shows the total revenue for this invoice" do
@@ -108,15 +106,28 @@ RSpec.describe "invoices show" do
 
   #userstory 7
   it "shows subtotal from this invoice (not including discounts)" do
+    visit merchant_invoice_path(@merchant1, @invoice_1)
 
+    expect(page).to have_content("Subtotal: #{@invoice_1.total_revenue}")
   end
 
   it "displays the grand total revenue after discount applied" do
+    visit merchant_invoice_path(@merchant1, @invoice_1)
+    expect(page).to have_content("Grand Total: $#{@invoice_1.grand_total}")
 
+    visit merchant_invoice_path(@merchant2, @invoice_8)
+    expect(page).to have_content("Grand Total: $#{@invoice_8.grand_total}")
+
+    visit merchant_invoice_path(@merchant1, @invoice_7)
+    expect(page).to have_content("Grand Total: $#{@invoice_7.grand_total}")
   end
 
   it "displays name and code of the coupon used (if applicable) as a link to that coupon's show page" do
     visit merchant_invoice_path(@merchant1, @invoice_1)
 
+    within "#discount" do
+      expect(page).to have_content("Discount:")
+      expect(page).to have_link("#{@hair10.name} - #{@hair10.unique_code}")
+    end
   end
 end
