@@ -37,7 +37,7 @@ Rake::Task["csv_load:all"].invoke
 @item_6 = Item.create!(name: "Necklace", description: "Neck bling", unit_price: 300, merchant_id: @merchant2.id)
 
 @item_9 = Item.create!(name: "Brush", description: "Best brush on the market!", unit_price: 10, merchant_id: @merchant3.id)
-@item_10 = Item.create!(name; "Comb", description: "No tears or tangles", unit_price: 3, merchant_id: @merchant3.id)
+@item_10 = Item.create!(name: "Comb", description: "No tears or tangles", unit_price: 3, merchant_id: @merchant3.id)
 
 @customer_1 = Customer.create!(first_name: "Joey", last_name: "Smith")
 @customer_2 = Customer.create!(first_name: "Cecilia", last_name: "Jones")
