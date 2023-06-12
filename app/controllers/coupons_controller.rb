@@ -1,6 +1,7 @@
 class CouponsController < ApplicationController
   before_action :find_coupon_and_merchant, only: [:show, :edit, :update]
   before_action :find_merchant, only: [:index, :new, :create]
+  before_action :active_coupon_limit, only: [:update]
 
   def index
     @coupons = @merchant.coupons
@@ -52,5 +53,14 @@ class CouponsController < ApplicationController
   def find_coupon_and_merchant
     @coupon = Coupon.find(params[:id])
     @merchant = Merchant.find(params[:merchant_id])
+  end
+
+  def active_coupon_limit
+    @merchant = Merchant.find(params[:merchant_id])
+    @active_coupons = @merchant.coupons.active
+    if @active_coupons.count >= 5
+      flash.notice = "Error: You cannot have more than 5 active coupons, please deactivate one first"
+      redirect_to merchant_coupons_path(@merchant)
+    end
   end
 end
