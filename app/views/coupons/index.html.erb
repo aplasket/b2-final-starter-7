@@ -22,4 +22,11 @@
         Amount off: <%= coupon.amount_off %> <%= coupon.discount_type %></p>
     </div>
   <% end %>
+</div></br>
+
+<h3>Upcoming Holidays</h3>
+<div id="upcoming-holidays">
+  <% @holidays.each do |holiday| %>
+    <p><%= holiday.name %> - <%= holiday.date %></p>
+  <% end %>
 </div>
