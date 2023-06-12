@@ -102,5 +102,16 @@ RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
         end
       end
     end
+
+    #userstory 9
+    it "displays a section for next 3 upcoming US holidays" do
+      expect(page).to have_content("Upcoming Holidays")
+      within "#upcoming-holidays" do
+        expect(page).to have_content("Juneteenth - 2023-06-19")
+        expect(page).to have_content("Independence Day - 2023-07-04")
+        expect(page).to have_content("Labour Day - 2023-09-04")
+        expect(page).to_not have_content("Columbus Day - 2023-10-09")
+      end
+    end
   end
 end
