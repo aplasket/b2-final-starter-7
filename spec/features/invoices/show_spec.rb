@@ -108,7 +108,7 @@ RSpec.describe "invoices show" do
   it "shows subtotal from this invoice (not including discounts)" do
     visit merchant_invoice_path(@merchant1, @invoice_1)
 
-    expect(page).to have_content("Subtotal: #{@invoice_1.total_revenue}")
+    expect(page).to have_content("Subtotal: $#{@invoice_1.total_revenue}")
   end
 
   it "displays the grand total revenue after discount applied" do

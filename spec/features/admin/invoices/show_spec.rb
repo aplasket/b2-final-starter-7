@@ -3,11 +3,12 @@ require "rails_helper"
 describe "Admin Invoices Index Page" do
   before :each do
     @m1 = Merchant.create!(name: "Merchant 1")
+    @hair10 = Coupon.create!(name: "10% off", unique_code: "HAIR10OFF", amount_off: 10, discount_type: 0, merchant_id: @m1.id, status: 0)
 
     @c1 = Customer.create!(first_name: "Yo", last_name: "Yoz", address: "123 Heyyo", city: "Whoville", state: "CO", zip: 12345)
     @c2 = Customer.create!(first_name: "Hey", last_name: "Heyz")
 
-    @i1 = Invoice.create!(customer_id: @c1.id, status: 2, created_at: "2012-03-25 09:54:09")
+    @i1 = Invoice.create!(customer_id: @c1.id, status: 2, created_at: "2012-03-25 09:54:09", coupon_id: @hair10.id)
     @i2 = Invoice.create!(customer_id: @c2.id, status: 1, created_at: "2012-03-25 09:30:09")
 
     @item_1 = Item.create!(name: "test", description: "lalala", unit_price: 6, merchant_id: @m1.id)
@@ -16,6 +17,8 @@ describe "Admin Invoices Index Page" do
     @ii_1 = InvoiceItem.create!(invoice_id: @i1.id, item_id: @item_1.id, quantity: 12, unit_price: 2, status: 0)
     @ii_2 = InvoiceItem.create!(invoice_id: @i1.id, item_id: @item_2.id, quantity: 6, unit_price: 1, status: 1)
     @ii_3 = InvoiceItem.create!(invoice_id: @i2.id, item_id: @item_2.id, quantity: 87, unit_price: 12, status: 2)
+
+    @t1 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @i1.id)
 
     visit admin_invoice_path(@i1)
   end
@@ -54,7 +57,7 @@ describe "Admin Invoices Index Page" do
   end
 
   it "should display the total revenue the invoice will generate" do
-    expect(page).to have_content("Total Revenue: $#{@i1.total_revenue}")
+    expect(page).to have_content("Subtotal: $#{@i1.total_revenue}")
 
     expect(page).to_not have_content(@i2.total_revenue)
   end
@@ -68,5 +71,25 @@ describe "Admin Invoices Index Page" do
       expect(current_path).to eq(admin_invoice_path(@i1))
       expect(@i1.status).to eq("completed")
     end
+  end
+
+  #userstory 8
+  it "shows subtotal for the invoice" do
+    expect(page).to have_content("Subtotal: $#{@i1.total_revenue}")
+  end
+
+  it "displays the name and code of coupoon applied (if applicable)" do
+    within "#discount" do
+      expect(page).to have_content("Discount: #{@hair10.name} - #{@hair10.unique_code}")
+    end
+
+    visit admin_invoice_path(@i2)
+    within "#discount" do
+      expect(page).to have_content("Discount: None")
+    end
+  end
+
+  it "displays the grand total revenue after discount applied" do
+    expect(page).to have_content("Grand Total: $#{@i1.grand_total}")
   end
 end

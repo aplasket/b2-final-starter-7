@@ -5,6 +5,7 @@ class Admin::InvoicesController < ApplicationController
   end
 
   def show
+    @coupon = @invoice.coupon
   end
 
   def edit
