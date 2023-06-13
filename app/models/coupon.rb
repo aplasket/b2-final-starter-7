@@ -18,4 +18,8 @@ class Coupon < ApplicationRecord
   def count_used
     invoices.joins(:transactions).where("transactions.result = 1").count
   end
+
+  def invoice_in_progress?
+    invoices.where("invoices.status = 1").count > 0
+  end
 end

@@ -9,8 +9,8 @@
 
 <div id="status-<%= @coupon.id %>">
 <% if @coupon.status == "active" %>
-    <%= button_to "Deactivate Coupon", "/merchants/#{@merchant.id}/coupons/#{@coupon.id}?status=inactive", method: :patch %>
+    <%= button_to "Deactivate Coupon", "/merchants/#{@merchant.id}/coupons/#{@coupon.id}?change=active", method: :patch %>
 <% elsif @coupon.status == "inactive" %>
-    <%= button_to "Activate Coupon", "/merchants/#{@merchant.id}/coupons/#{@coupon.id}?status=active", method: :patch %>
+    <%= button_to "Activate Coupon", "/merchants/#{@merchant.id}/coupons/#{@coupon.id}?change=inactive", method: :patch %>
 <% end %>
 </div>
