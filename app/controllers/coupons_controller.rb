@@ -11,21 +11,20 @@ class CouponsController < ApplicationController
   end
 
   def show
-    @coupon = Coupon.find(params[:id])
   end
 
   def new
   end
 
   def create
-    @coupon1 = Coupon.new(coupon_params)
-    if @coupon1.valid?
-      @coupon1.save
+    coupon1 = Coupon.new(coupon_params)
+    if coupon1.valid?
+      coupon1.save
       flash.notice = "New Coupon has been created!"
       redirect_to merchant_coupons_path(@merchant)
     else
       redirect_to new_merchant_coupon_path(@merchant)
-      flash.notice =  "Error: #{@coupon1.errors.full_messages.to_sentence}"
+      flash.notice =  "Error: #{coupon1.errors.full_messages.to_sentence}"
     end
   end
 
