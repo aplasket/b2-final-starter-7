@@ -12,14 +12,14 @@
 
   <p> Created on: <%= @invoice.created_at.strftime("%A, %B %-d, %Y") %></p>
   <p>Subtotal: <%= number_to_currency(@invoice.total_revenue) %></p>
-  <div id="discount">
-    <% if @coupon.nil? %>
-      <p>Discount: None</p>
-    <% else %>
+
+  <% if @coupon.present? %>
+    <div id="discount">
       <p>Discount:
       <%= link_to "#{@coupon.name} - #{@coupon.unique_code}", merchant_coupon_path(@merchant, @coupon) %></p>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
+  
   <p>Grand Total: <%= number_to_currency(@invoice.grand_total) %></p>
 
   <h4>Customer:</h4>

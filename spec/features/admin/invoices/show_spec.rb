@@ -19,6 +19,7 @@ describe "Admin Invoices Index Page" do
     @ii_3 = InvoiceItem.create!(invoice_id: @i2.id, item_id: @item_2.id, quantity: 87, unit_price: 12, status: 2)
 
     @t1 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @i1.id)
+    @t2 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @i2.id)
 
     visit admin_invoice_path(@i1)
   end
@@ -84,9 +85,7 @@ describe "Admin Invoices Index Page" do
     end
 
     visit admin_invoice_path(@i2)
-    within "#discount" do
-      expect(page).to have_content("Discount: None")
-    end
+    expect(page).to_not have_content("Discount:")
   end
 
   it "displays the grand total revenue after discount applied" do

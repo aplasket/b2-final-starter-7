@@ -44,7 +44,7 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
 
       expect(page).to have_content("Coupon Name: #{@hair10.name}")
       expect(page).to have_content("Code: #{@hair10.unique_code}")
-      expect(page).to have_content("Amount off: $#{@hair10.amount_off} #{@hair10.discount_type}")
+      expect(page).to have_content("Amount off: #{@hair10.amount_off} #{@hair10.discount_type}")
       expect(page).to have_content("Status: #{@hair10.status}")
       expect(page).to_not have_content(@hair20.name)
     end
