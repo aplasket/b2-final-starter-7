@@ -3,13 +3,42 @@ require "rails_helper"
 RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
   before(:each) do
     @hair = Merchant.create!(name: "Hair Care")
-    @hair10 = Coupon.create!(name: "10% off", unique_code: "HAIR10OFF", amount_off: 10, discount_type: 0, merchant_id: @hair.id)
-    @hair20 = Coupon.create!(name: "20% off", unique_code: "HAIR20OFF", amount_off: 20, discount_type: 0, merchant_id: @hair.id, status: 0)
-    @hairships = Coupon.create!(name: "Free Shipping", unique_code: "HAIRFREESHIP", amount_off: 7, discount_type: 1, merchant_id: @hair.id)
+    @hair10 = Coupon.create!(name: "10% off", unique_code: "HAIR10OFF", amount_off: 10, discount_type: 0, merchant_id: @hair.id) #inactive
+    @hair20 = Coupon.create!(name: "20% off", unique_code: "HAIR20OFF", amount_off: 20, discount_type: 0, merchant_id: @hair.id, status: 0) #active
+    @hairships = Coupon.create!(name: "Free Shipping", unique_code: "HAIRFREESHIP", amount_off: 7, discount_type: 1, merchant_id: @hair.id) #inactive
+    @love10 = Coupon.create!(name: "$10 off", unique_code: "LOVE10", amount_off: 10, discount_type: 1, merchant_id: @hair.id, status: 0) #active
+
+    @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @hair.id, status: 1)
+    @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @hair.id)
 
     @sallys = Merchant.create!(name: "Sally's Salon")
     @sallyships = Coupon.create!(name: "Free Shipping", unique_code: "SALLYFREESHIP", amount_off: 12, discount_type: 1, merchant_id: @sallys.id)
     @suziebest = Coupon.create!(name: "Suzie's Best Discount", unique_code: "OWNER50", amount_off: 50, discount_type: 0, merchant_id: @sallys.id)
+
+    @customer_1 = Customer.create!(first_name: "Joey", last_name: "Smith")
+    @customer_2 = Customer.create!(first_name: "Cecilia", last_name: "Jones")
+
+    @invoice_1 = Invoice.create!(customer_id: @customer_1.id, status: 2, coupon_id: @hair10.id) #coupon 2 uses - inactive
+    @invoice_2 = Invoice.create!(customer_id: @customer_1.id, status: 2, coupon_id: @hair20.id) #coupon  2 uses - active
+    @invoice_3 = Invoice.create!(customer_id: @customer_2.id, status: 2, coupon_id: @hairships.id) #coupon 1 use - inactive
+    @invoice_4 = Invoice.create!(customer_id: @customer_1.id, status: 2, coupon_id: @hair20.id)
+    @invoice_5 = Invoice.create!(customer_id: @customer_2.id, status: 2, coupon_id: @hair10.id)
+    @invoice_6 = Invoice.create!(customer_id: @customer_1.id, status: 2, coupon_id: @love10.id) #coupon 1 use - active
+
+    @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 9, unit_price: 10, status: 2)
+    @ii_2 = InvoiceItem.create!(invoice_id: @invoice_2.id, item_id: @item_2.id, quantity: 2, unit_price: 8, status: 2)
+    @ii_3 = InvoiceItem.create!(invoice_id: @invoice_3.id, item_id: @item_1.id, quantity: 1, unit_price: 10, status: 2)
+    @ii_4 = InvoiceItem.create!(invoice_id: @invoice_4.id, item_id: @item_2.id, quantity: 3, unit_price: 8, status: 2)
+    @ii_5 = InvoiceItem.create!(invoice_id: @invoice_5.id, item_id: @item_1.id, quantity: 4, unit_price: 10, status: 2)
+    @ii_6 = InvoiceItem.create!(invoice_id: @invoice_6.id, item_id: @item_2.id, quantity: 6, unit_price: 8, status: 2)
+
+    @transaction1 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_1.id)
+    @transaction2 = Transaction.create!(credit_card_number: 203142, result: 1, invoice_id: @invoice_2.id)
+    @transaction3 = Transaction.create!(credit_card_number: 201042, result: 1, invoice_id: @invoice_3.id)
+    @transaction4 = Transaction.create!(credit_card_number: 208942, result: 1, invoice_id: @invoice_4.id)
+    @transaction5 = Transaction.create!(credit_card_number: 219402, result: 1, invoice_id: @invoice_5.id)
+    @transaction6 = Transaction.create!(credit_card_number: 248172, result: 1, invoice_id: @invoice_6.id)
+
 
     visit merchant_coupons_path(@hair)
   end
@@ -111,6 +140,22 @@ RSpec.describe "/merchants/:id/coupons, coupon index page", type: :feature do
         expect(page).to have_content("Independence Day - 2023-07-04")
         expect(page).to have_content("Labour Day - 2023-09-04")
         expect(page).to_not have_content("Columbus Day - 2023-10-09")
+      end
+    end
+
+    #extension 1
+    it "active/inactive coupons are sorted in order of popularity (count of use), most to least" do
+      save_and_open_page
+      within "#active-coupons" do
+        expect(@hair20).to appear_before(@love10)
+        expect(@hair20.count_used).to eq(2)
+        expect(@love10.count_used).to eq(1)
+      end
+
+      within "#inactive-coupons" do
+        expect(@hair10).to appear_before(@hairships)
+        expect(@hair10.count_used).to eq(2)
+        expect(@hairships.count_used).to eq(1)
       end
     end
   end

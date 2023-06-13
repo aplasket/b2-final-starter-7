@@ -62,4 +62,8 @@ class Merchant < ApplicationRecord
   def disabled_items
     items.where(status: 0)
   end
+
+  def activated_coupons_sorted
+    binding.pry
+  end
 end

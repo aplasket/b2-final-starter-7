@@ -5,7 +5,7 @@ class CouponsController < ApplicationController
 
   def index
     @coupons = @merchant.coupons
-    @active_coupons = @merchant.coupons.active
+    @active_coupons = @merchant.activated_coupons_sorted
     @inactive_coupons = @merchant.coupons.inactive
     @holidays = HolidaySearch.new.new_holiday(3)
   end
