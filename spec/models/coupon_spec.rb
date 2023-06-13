@@ -20,7 +20,7 @@ RSpec.describe Coupon, type: :model do
   describe "instance methods" do
     before(:each) do
       @hair = Merchant.create!(name: "Hair Care")
-      @hair10 = Coupon.create!(name: "10% off", unique_code: "HAIR10OFF", amount_off: 10, discount_type: 0, merchant_id: @hair.id)
+      @hair10 = Coupon.create!(name: "10% off", unique_code: "HAIR10OFF", amount_off: 10, discount_type: 0, merchant_id: @hair.id, status: 0)
       @hair20 = Coupon.create!(name: "20% off", unique_code: "HAIR20OFF", amount_off: 20, discount_type: 0, merchant_id: @hair.id)
       @hairbogo50 = Coupon.create!(name: "Free Shipping", unique_code: "HAIRFREESHIP", amount_off: 7, discount_type: 1, merchant_id: @hair.id)
 
@@ -39,7 +39,7 @@ RSpec.describe Coupon, type: :model do
       @invoice_2 = Invoice.create!(customer_id: @customer_1.id, status: 2, coupon_id: @hair10.id)
       @invoice_3 = Invoice.create!(customer_id: @customer_2.id, status: 2, coupon_id: @hair10.id) #c2 has 1 successful transaction
       @invoice_4 = Invoice.create!(customer_id: @customer_2.id, status: 2, coupon_id: @hair10.id) # this one is a failed transaction
-      @invoice_5 = Invoice.create!(customer_id: @customer_3.id, status: 2, coupon_id: @hair10.id) #c3 has 0 successful transactions
+      @invoice_5 = Invoice.create!(customer_id: @customer_3.id, status: 1, coupon_id: @hair10.id) #c3 has 0 successful transactions
 
       @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 9, unit_price: 10, status: 0)
       @ii_2 = InvoiceItem.create!(invoice_id: @invoice_2.id, item_id: @item_2.id, quantity: 1, unit_price: 10, status: 0)
@@ -58,6 +58,12 @@ RSpec.describe Coupon, type: :model do
       it "count how many times this coupon (code) has been used; successful transactions only" do
         expect(@hair10.count_used).to eq(3)
         expect(@hair20.count_used).to eq(0)
+      end
+    end
+
+    describe "#invoice_in_progress?" do
+      it "searches all invoice status and returns true if any are in progress" do
+        expect(@hair10.invoice_in_progress?).to eq(true)
       end
     end
   end

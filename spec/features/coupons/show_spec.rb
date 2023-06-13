@@ -6,6 +6,7 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
     @hair10 = Coupon.create!(name: "10% off", unique_code: "HAIR10OFF", amount_off: 10, discount_type: 0, merchant_id: @hair.id) #default status is 1/inactive
     @hair20 = Coupon.create!(name: "20% off", unique_code: "HAIR20OFF", amount_off: 20, discount_type: 0, merchant_id: @hair.id, status: 0)
     @hairships = Coupon.create!(name: "Free Shipping", unique_code: "HAIRFREESHIP", amount_off: 7, discount_type: 1, merchant_id: @hair.id)
+    @whoops = Coupon.create!(name: "Whoops", unique_code: "Whoops15", amount_off: 15, discount_type: 0, merchant_id: @hair.id, status: 0)
 
     @sallys = Merchant.create!(name: "Sally's Salon")
     @sallyships = Coupon.create!(name: "Free Shipping", unique_code: "SALLYFREESHIP", amount_off: 12, discount_type: 1, merchant_id: @sallys.id)
@@ -23,18 +24,21 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
     @invoice_3 = Invoice.create!(customer_id: @customer_2.id, status: 2, coupon_id: @hair10.id) #c2 has 1 successful transaction
     @invoice_4 = Invoice.create!(customer_id: @customer_2.id, status: 2, coupon_id: @hair10.id) # this one is a failed transaction
     @invoice_5 = Invoice.create!(customer_id: @customer_3.id, status: 2, coupon_id: @hair10.id) #c3 has 0 successful transactions
+    @invoice_6 = Invoice.create!(customer_id: @customer_3.id, status: 1, coupon_id: @whoops.id)
 
     @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 9, unit_price: 10, status: 0)
     @ii_2 = InvoiceItem.create!(invoice_id: @invoice_2.id, item_id: @item_2.id, quantity: 1, unit_price: 10, status: 0)
     @ii_3 = InvoiceItem.create!(invoice_id: @invoice_3.id, item_id: @item_2.id, quantity: 2, unit_price: 8, status: 2)
-    @ii_4 = InvoiceItem.create!(invoice_id: @invoice_4.id, item_id: @item_1.id, quantity: 3, unit_price: 5, status: 1)
-    @ii_5 = InvoiceItem.create!(invoice_id: @invoice_5.id, item_id: @item_1.id, quantity: 3, unit_price: 5, status: 1)
+    @ii_4 = InvoiceItem.create!(invoice_id: @invoice_4.id, item_id: @item_1.id, quantity: 3, unit_price: 10, status: 1)
+    @ii_5 = InvoiceItem.create!(invoice_id: @invoice_5.id, item_id: @item_1.id, quantity: 3, unit_price: 10, status: 1)
+    @ii_6 = InvoiceItem.create!(invoice_id: @invoice_6.id, item_id: @item_2.id, quantity: 3, unit_price: 8, status: 1)
 
     @transaction1 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_1.id) #c1.1 success
     @transaction2 = Transaction.create!(credit_card_number: 230948, result: 1, invoice_id: @invoice_2.id) #c1.2 success
     @transaction3 = Transaction.create!(credit_card_number: 234092, result: 1, invoice_id: @invoice_3.id) #c2.1 success
     @transaction4 = Transaction.create!(credit_card_number: 230429, result: 0, invoice_id: @invoice_4.id) #c2.2 fail
     @transaction5 = Transaction.create!(credit_card_number: 102938, result: 0, invoice_id: @invoice_5.id) #c3.1 fail
+    @transaction6 = Transaction.create!(credit_card_number: 100738, result: 1, invoice_id: @invoice_6.id)
   end
 
   describe "as a merchant, on the coupon show page" do
@@ -99,19 +103,31 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
       coupon1 = @hair.coupons.create!(name: "silly40", unique_code: "SILLY40", amount_off: 40, discount_type: 0, status: 0)
       coupon2 = @hair.coupons.create!(name: "brush10", unique_code: "BRUSH10", amount_off: 10, discount_type: 1, status: 0)
       coupon3 = @hair.coupons.create!(name: "FREESHIP", unique_code: "SHIPTODAY", amount_off: 11, discount_type: 1, status: 0)
-      coupon4 = @hair.coupons.create!(name: "save25today", unique_code: "25TODAY", amount_off: 25, discount_type: 0, status: 0)
-      coupon5 = @hair.coupons.create!(name: "THANKS13", unique_code: "THANKS13", amount_off: 13, discount_type: 0, status: 1)
+      coupon4 = @hair.coupons.create!(name: "save25today", unique_code: "25TODAY", amount_off: 25, discount_type: 0, status: 1)
 
-      visit merchant_coupon_path(@hair, coupon5)
+      visit merchant_coupon_path(@hair, coupon4)
 
-      within "#status-#{coupon5.id}" do
-        expect(coupon5.status).to eq("inactive")
+      within "#status-#{coupon4.id}" do
+        expect(coupon4.status).to eq("inactive")
         expect(@hair.coupons.active.count).to eq(5)
         expect(page).to have_button("Activate Coupon")
         click_button "Activate Coupon"
       end
       expect(current_path).to eq(merchant_coupons_path(@hair))
       expect(page).to have_content("Error: You cannot have more than 5 active coupons, please deactivate one first")
+    end
+
+    #sad path - cannot deactivate a coupon while invoice status = 'in process'/1
+    it "displays error if merchant tries to deactivate a coupon while an invoice is in process" do
+      visit merchant_coupon_path(@hair, @whoops)
+      
+      within "#status-#{@whoops.id}" do
+        expect(@whoops.status).to eq("active")
+        click_button "Deactivate Coupon"
+      end
+
+      expect(page).to have_content("Error: You cannot deactivate a coupon while an invoice is in process")
+      expect(current_path).to eq(merchant_coupon_path(@hair, @whoops))
     end
   end
 end
