@@ -25,8 +25,7 @@ Rake::Task["csv_load:all"].invoke
 @luckyday = Coupon.create!(name: "St Pattys Day", unique_code: "LUCKY50", amount_off: 50, discount_type: 1, merchant_id: @merchant2.id, status: 0)
 
 @merchant3 = Merchant.create!(name: "Sally's Salon")
-@sallys10 = Coupon.create!(name: "$10", unique_code: "SALLY10", amount_off: 10, discount_type: 1, merchant_id: @merchant3.id) #inactive coupon
-@sallywins10 = Coupon.create!(name: "You Won 10", unique_code: "Winner10", amount_off: 10, discount_type: 1, merchant_id: @merchant3.id, status: 0) #active coupon
+@sallys10 = Coupon.create!(name: "$10", unique_code: "SALLY10", amount_off: 10, discount_type: 1, merchant_id: @merchant3.id)
 
 @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
 @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
@@ -56,13 +55,14 @@ Rake::Task["csv_load:all"].invoke
 @invoice_6 = Invoice.create!(customer_id: @customer_5.id, status: 2)
 @invoice_7 = Invoice.create!(customer_id: @customer_6.id, status: 2, coupon_id: @love10.id) #success, total = 0 (instead of -4)
 @invoice_8 = Invoice.create!(customer_id: @customer_6.id, status: 1, coupon_id: @luckyday.id) #succesful transaction, $50 off
-@invoice_9 = Invoice.create!(customer_id: @customer_3.id, status: 1, coupon_id: @sallys10.id) #inactive coupon, no discount
-@invoice_10 = Invoice.create!(customer_id: @customer_4.id, status: 1, coupon_id: @sallywins10.id) #active coupon, $10 off
+@invoice_9 = Invoice.create!(customer_id: @customer_3.id, status: 1, coupon_id: @sallys10.id)
+@invoice_10 = Invoice.create!(customer_id: @customer_4.id, status: 1, coupon_id: @sallys10.id)
 
 @ii_1 = InvoiceItem.create!(invoice_id: @invoice_1.id, item_id: @item_1.id, quantity: 9, unit_price: 10, status: 2)
 @ii_2 = InvoiceItem.create!(invoice_id: @invoice_2.id, item_id: @item_1.id, quantity: 1, unit_price: 10, status: 2)
 @ii_3 = InvoiceItem.create!(invoice_id: @invoice_3.id, item_id: @item_2.id, quantity: 2, unit_price: 8, status: 2)
 @ii_4 = InvoiceItem.create!(invoice_id: @invoice_4.id, item_id: @item_3.id, quantity: 3, unit_price: 5, status: 1)
+@ii_5 = InvoiceItem.create!(invoice_id: @invoice_5.id, item_id: @item_5.id, quantity: 3, unit_price: 200, status: 1)
 @ii_6 = InvoiceItem.create!(invoice_id: @invoice_5.id, item_id: @item_4.id, quantity: 1, unit_price: 1, status: 1)
 @ii_7 = InvoiceItem.create!(invoice_id: @invoice_6.id, item_id: @item_7.id, quantity: 1, unit_price: 3, status: 1)
 @ii_8 = InvoiceItem.create!(invoice_id: @invoice_7.id, item_id: @item_8.id, quantity: 1, unit_price: 5, status: 1)
