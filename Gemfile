@@ -61,9 +61,9 @@ group :development, :test do
   gem "rspec-rails"
   gem "shoulda-matchers"
   gem "simplecov"
-  gem "httparty"
 end
 
+gem "httparty"
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
