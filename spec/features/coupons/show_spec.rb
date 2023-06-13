@@ -120,7 +120,7 @@ RSpec.describe "/merchants/:id/coupons/id, coupon show page" do
     #sad path - cannot deactivate a coupon while invoice status = 'in process'/1
     it "displays error if merchant tries to deactivate a coupon while an invoice is in process" do
       visit merchant_coupon_path(@hair, @whoops)
-      
+
       within "#status-#{@whoops.id}" do
         expect(@whoops.status).to eq("active")
         click_button "Deactivate Coupon"

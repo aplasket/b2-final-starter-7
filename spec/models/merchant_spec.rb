@@ -4,7 +4,7 @@ describe Merchant do
   describe "validations" do
     it { should validate_presence_of :name }
   end
-  
+
   describe "relationships" do
     it { should have_many :items }
     it { should have_many(:invoice_items).through(:items) }
@@ -94,7 +94,14 @@ describe Merchant do
   describe "instance methods" do
     before :each do
       @merchant1 = Merchant.create!(name: 'Hair Care')
+      @hair10 = Coupon.create!(name: "10% off", unique_code: "HAIR10OFF", amount_off: 10, discount_type: 0, merchant_id: @merchant1.id, status: 0)
+      @hair20 = Coupon.create!(name: "20% off", unique_code: "HAIR20OFF", amount_off: 20, discount_type: 0, merchant_id: @merchant1.id, status: 0)
+      @hairbogo50 = Coupon.create!(name: "BOGO", unique_code: "BOBOSBOGO", amount_off: 7, discount_type: 1, merchant_id: @merchant1.id, status: 0)
+      @hairships = Coupon.create!(name: "Free Shipping", unique_code: "HAIRFREESHIP", amount_off: 7, discount_type: 1, merchant_id: @merchant1.id, status: 0)
+      @whoops = Coupon.create!(name: "Whoops", unique_code: "Whoops15", amount_off: 15, discount_type: 0, merchant_id: @merchant1.id, status: 0)
+
       @merchant2 = Merchant.create!(name: 'Jewelry')
+      @jules = Coupon.create!(name: "Free Shipping", unique_code: "juleships", amount_off: 12, discount_type: 1, merchant_id: @merchant2.id) #inactive  coupon
 
       @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
       @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
@@ -169,6 +176,16 @@ describe Merchant do
     it "disabled_items" do
       expect(@merchant1.disabled_items).to eq([@item_2, @item_3, @item_4, @item_7, @item_8])
       expect(@merchant2.disabled_items).to eq([@item_5, @item_6])
+    end
+
+    it "#active_coupon_count?" do
+      expect(@merchant1.active_coupon_count).to eq(5)
+      expect(@merchant2.active_coupon_count).to eq(0)
+    end
+
+    it "#active_threshold_reached?" do
+      expect(@merchant1.active_threshold_reached?).to eq(true)
+      expect(@merchant2.active_threshold_reached?).to eq(false)
     end
   end
 end
