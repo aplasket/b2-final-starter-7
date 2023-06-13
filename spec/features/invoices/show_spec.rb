@@ -129,5 +129,10 @@ RSpec.describe "invoices show" do
       expect(page).to have_content("Discount:")
       expect(page).to have_link("#{@hair10.name} - #{@hair10.unique_code}")
     end
+
+    visit merchant_invoice_path(@merchant1, @invoice_4)
+    expect(page).to have_content("Subtotal: $#{@invoice_4.total_revenue}")
+    expect(page).to have_content("Grand Total: $#{@invoice_4.grand_total}")
+    expect(page).to_not have_content("Discount:")
   end
 end

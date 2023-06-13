@@ -84,9 +84,7 @@ describe "Admin Invoices Index Page" do
     end
 
     visit admin_invoice_path(@i2)
-    within "#discount" do
-      expect(page).to have_content("Discount: None")
-    end
+    expect(page).to_not have_content("Discount:")
   end
 
   it "displays the grand total revenue after discount applied" do
