@@ -2,6 +2,7 @@ class CouponsController < ApplicationController
   before_action :find_coupon_and_merchant, only: [:show, :edit, :update]
   before_action :find_merchant, only: [:index, :new, :create]
   before_action :invoice_check_for_coupon, only: [:update]
+  before_action :active_coupon_limit, only: [:update]
 
   def index
     @coupons = @merchant.coupons
@@ -32,13 +33,10 @@ class CouponsController < ApplicationController
   end
 
   def update
-    if params[:change] == "inactive" && @merchant.active_threshold_reached?
-      redirect_to merchant_coupons_path(@merchant)
-      flash.notice = "Error: You cannot have more than 5 active coupons, please deactivate one first"
-    elsif params[:change] == "active"
+    if params[:change] == "active"
       @coupon.update(status: "inactive")
       redirect_to merchant_coupon_path(@merchant, @coupon)
-    else
+    elsif params[:change] == "inactive"
       @coupon.update(status: "active")
       redirect_to merchant_coupon_path(@merchant, @coupon)
     end
@@ -56,6 +54,15 @@ class CouponsController < ApplicationController
   def find_coupon_and_merchant
     @coupon = Coupon.find(params[:id])
     @merchant = Merchant.find(params[:merchant_id])
+  end
+
+  def active_coupon_limit
+    @merchant = Merchant.find(params[:merchant_id])
+    @coupon = Coupon.find(params[:id])
+    if @merchant.active_threshold_reached? && @coupon.status == "inactive"
+      redirect_to merchant_coupons_path(@merchant)
+      flash.notice = "Error: You cannot have more than 5 active coupons, please deactivate one first"
+    end
   end
 
   def invoice_check_for_coupon
