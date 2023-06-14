@@ -61,7 +61,7 @@ class CouponsController < ApplicationController
   def invoice_check_for_coupon
     @coupon = Coupon.find(params[:id])
     @invoice = Invoice.find_by(coupon_id: @coupon.id)
-    if @coupon.invoice_in_progress?
+    if @coupon.invoice_in_progress? && @coupon.status == "active"
       flash[:alert] = "Error: You cannot deactivate a coupon while an invoice is in process"
       redirect_to merchant_coupon_path(@merchant, @coupon)
     end
