@@ -19,8 +19,7 @@ class CouponsController < ApplicationController
 
   def create
     coupon1 = Coupon.new(coupon_params)
-    if coupon1.valid?
-      coupon1.save
+    if coupon1.save
       flash.notice = "New Coupon has been created!"
       redirect_to merchant_coupons_path(@merchant)
     else
